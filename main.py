@@ -5,8 +5,8 @@ from time import time
 from random import randint, choice
 
 
-def hero(x, y, state):
-    period.draw.bitmap(xy=(x, y), bitmap=pub.hero_picture, fill=True)
+def hero(x, y, state, fill=True):
+    period.draw.bitmap(xy=(x, y), bitmap=pub.hero_picture, fill=fill)
 
 
 def create_enemy():
@@ -20,7 +20,7 @@ def create_enemy():
 @period.on_start
 def on_load():
     pub.health = 3
-    pub.score = 0
+    pub.score = 1
 
     # Главный герой и его начальные координаты
     pub.hero_picture = Image.open('maska.png')
@@ -48,7 +48,7 @@ def on_frame():
     period.draw.icon(xy=(113, 3), icon=period.core.font.icons[
         'battery-full' if pub.health == 3 else 'battery-half' if pub.health == 2 else 'battery-quarter' if pub.health == 1 else 'battery-empty'
     ], size=8, fill=True)
-    period.draw.text(xy=(3, 1), text=f'Score: {pub.score}', fill=True)
+    period.draw.text(xy=(3, 1), text=f'Bullets: {pub.score}', fill=True)
 
     # Перемещение главного героя
     buttons = period.button.get_pressed()
@@ -70,8 +70,10 @@ def on_frame():
 
     # Стрельба
     if period.button.first in buttons and pub.shoot_time < time():
-        pub.bullets.append([pub.hero_x + 15, pub.hero_y + 5])
-        pub.shoot_time = time() + pub.shoot_interval
+        if pub.score > 0:
+            pub.bullets.append([pub.hero_x + 15, pub.hero_y + 5])
+            pub.shoot_time = time() + pub.shoot_interval
+            pub.score -= 1
 
     for item in pub.bullets:
         pub.bullets[pub.bullets.index(item)][0] += pub.bullet_speed
@@ -84,6 +86,14 @@ def on_frame():
     if len(pub.enemies) == 0: create_enemy()
     for enemy in pub.enemies.copy():
         if enemy[0] < -8:
+            for _ in range(5):
+                hero(pub.hero_x, pub.hero_y, 'alive', fill=False)
+                period.draw.apply()
+                period.util.delay(0.1)
+                hero(pub.hero_x, pub.hero_y, 'alive', fill=True)
+                period.draw.apply()
+                period.util.delay(0.1)
+
             pub.health -= 1
             if pub.health <= 0:
                 period.graphics.alert(text='Вы проиграли!')
@@ -108,9 +118,11 @@ def on_frame():
 
         for bullet in pub.bullets.copy():
             if bullet[0] >= enemy[0] and bullet[1] in range(enemy[1], enemy[1] + 9):
+                # Попадание пули во врага
+
                 pub.bullets.remove(bullet)
                 pub.enemies.remove(enemy)
-                pub.score += 1
+                pub.score += choice([1, 1, 2])
 
                 if pub.enemy_speed < 1.5: pub.enemy_speed += 0.005
                 if pub.shoot_interval > 0.2: pub.shoot_interval -= 0.005
