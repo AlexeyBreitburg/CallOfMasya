@@ -17,10 +17,20 @@ def create_enemy():
     pub.enemies.append(position)
 
 
+def splash():
+    splash_picture = Image.open('splash.png')
+    period.draw.bitmap(xy=(0, 0), bitmap=splash_picture, fill=True)
+    period.draw.apply()
+
+    while period.button.center not in period.button.get_pressed():
+        period.draw.device.apply_actions()
+
 @period.on_start
 def on_load():
+    splash()
+
     pub.health = 3
-    pub.score = 1
+    pub.score = 10
 
     # Главный герой и его начальные координаты
     pub.hero_picture = Image.open('maska.png')
@@ -40,7 +50,7 @@ def on_load():
         Image.open('mouse2.png')
     ]
     pub.enemies = []
-    pub.enemy_speed = 0.4
+    pub.enemy_speed = 1
 
 
 @period.on_tick
@@ -97,13 +107,14 @@ def on_frame():
             pub.health -= 1
             if pub.health <= 0:
                 period.graphics.alert(text='Вы проиграли!')
-                period.util.delay(5)
+                period.util.delay(2)
+                splash()
 
                 pub.enemies.clear()
                 pub.bullets.clear()
 
                 pub.health = 3
-                pub.score = 0
+                pub.score = 10
                 pub.hero_x = 2
                 pub.hero_y = 24
                 break
