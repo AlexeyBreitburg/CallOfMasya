@@ -18,7 +18,7 @@ def create_enemy():
 
 
 def splash():
-    splash_picture = Image.open('splash.png')
+    splash_picture = period.resources.media.get('splash')
     period.draw.bitmap(xy=(0, 0), bitmap=splash_picture, fill=True)
     period.draw.apply()
 
@@ -33,7 +33,7 @@ def on_load():
     pub.score = 10
 
     # Главный герой и его начальные координаты
-    pub.hero_picture = Image.open('maska.png')
+    pub.hero_picture = period.resources.media.get('cat')
     pub.hero_x = 2
     pub.hero_y = 24
     pub.hero_speed = 1
@@ -46,8 +46,8 @@ def on_load():
 
     # Враги
     pub.enemy_sprites = [
-        Image.open('mouse1.png'),
-        Image.open('mouse2.png')
+        period.resources.media.get('mouse1'),
+        period.resources.media.get('mouse2')
     ]
     pub.enemies = []
     pub.enemy_speed = 1
@@ -141,7 +141,3 @@ def on_frame():
                     for _ in range(randint(2, 3)):
                         create_enemy()
                 break
-
-if __name__ == '__main__':
-    period.run_app()
-
