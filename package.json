@@ -1,0 +1,15 @@
+{
+  "name": "Call Of Maseely",
+  "author": "AlexPower",
+  "version": "1.0.0",
+  "uuid": "f6bde8471acd597e4253657a2b23ad48",
+  "sdk_version": "1",
+  "keywords": ["period-app"],
+  "watchapp": {"watchface": false},
+  "resources": [
+    {"type": "bitmap_image", "file": "cat.png", "name": "cat"},
+    {"type": "bitmap_image", "file": "splash.png", "name": "splash"},
+    {"type": "bitmap_image", "file": "mouse1.png", "name": "mouse1"},
+    {"type": "bitmap_image", "file": "mouse2.png", "name": "mouse2"}
+  ],
+  "dependencies": {}}
